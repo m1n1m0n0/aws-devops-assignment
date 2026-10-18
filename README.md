@@ -124,4 +124,4 @@ All items are saved in [`screenshots/`](screenshots/).
 | Bonus: Auto Scaling Group | `bonus-asg.png`, `bonus-asg-instances.png`, `bonus-asg-ec2-list.png`, `bonus-asg-cli.png` |
 | Bonus: failed instance replaced | `bonus-failure-1.png`, `bonus-failure-2.png`, `bonus-failure-3.png`, `bonus-failure-4.png` |
 | Diagrams | `docs/architecture.svg`, `docs/architecture-bonus.svg` |
-| Final cleanup | *added after the final cleanup* |
+| Final cleanup (every resource list empty) | `cleanup-final.png` |
