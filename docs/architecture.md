@@ -22,3 +22,20 @@
 
 ## S3 vs EBS
 S3 is object storage: accessed over HTTPS by key, practically unlimited, versioned and shared across services and Regions. EBS is block storage: a disk attached to one EC2 instance in one Availability Zone, used for the OS and for data needing a file system with low latency.
+
+## EC2 configuration (manual build)
+
+| Configuration | Value |
+|---|---|
+| Region | us-east-2 (Ohio) |
+| Availability Zone | us-east-2b |
+| AMI | Amazon Linux 2023 (`ami-0d31a22b09ceec4db`) |
+| Instance type | t3.micro (credit specification: standard) |
+| VPC | `vpc-03c6dc72cc445c1b0` (default VPC) |
+| Subnet | `subnet-005f4c8f7a91f6fc9` |
+| Public IP | 18.222.215.226 (temporary, released at cleanup) |
+| Security Group | `aws-devops-web-sg` (`sg-0c680bc27f21c8c4e`) |
+| Storage | 8 GiB gp3 root volume, encrypted, delete on termination |
+| IAM role | `aws-devops-ec2-role` (instance profile) |
+| Metadata | IMDSv2 required |
+| Web server | Apache installed by User Data (`scripts/user-data.sh`) |
