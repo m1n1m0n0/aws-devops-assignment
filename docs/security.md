@@ -4,7 +4,7 @@
 | Rule | Source | Why |
 |---|---|---|
 | HTTP 80 | 0.0.0.0/0 | The website must be public |
-| SSH 22 | `<YOUR_IP>/32` | Administration only from the student IP |
+| SSH 22 | The student's own public IP as a single /32 (not published in this repo) | Administration only from the student IP; never 0.0.0.0/0 |
 
 **Why SSH must not be open to 0.0.0.0/0:** the Internet is scanned constantly; an open port 22 attracts brute-force and credential-stuffing attempts, and one weak key or password gives full control of the server. Limiting it to one IP (or using Session Manager) shrinks the attack surface to almost nothing. Outbound traffic is left at the default for package installs.
 

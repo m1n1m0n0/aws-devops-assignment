@@ -39,3 +39,6 @@ S3 is object storage: accessed over HTTPS by key, practically unlimited, version
 | IAM role | `aws-devops-ec2-role` (instance profile) |
 | Metadata | IMDSv2 required |
 | Web server | Apache installed by User Data (`scripts/user-data.sh`) |
+
+## Diagram note
+The diagram shows the design built by CloudFormation (VPC 10.0.0.0/16, public subnet 10.0.1.0/24). The manual build used the account's default VPC (172.31.0.0/16) with the same components: Security Group, EC2 + Apache, encrypted EBS, IAM role (S3 read + CloudWatch agent policy), S3, CloudWatch alarm and SNS. S3, CloudWatch and SNS are regional services and sit outside the VPC. The bucket name contains the AWS account ID, so it is not shown in these docs.
