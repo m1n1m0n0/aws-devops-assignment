@@ -1,0 +1,6 @@
+*.pem
+*.key
+.env
+*.tfstate
+.aws/
+credentials
