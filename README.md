@@ -38,20 +38,21 @@ screenshots/
 ```bash
 aws cloudformation validate-template --template-body file://cloudformation/infrastructure.yaml
 
-aws cloudformation create-stack --stack-name aws-devops-assignment \
+aws cloudformation create-stack --stack-name aws-devops-cfn \
   --template-body file://cloudformation/infrastructure.yaml \
   --capabilities CAPABILITY_IAM \
   --parameters ParameterKey=Owner,ParameterValue="YOUR NAME" \
                ParameterKey=AdminCidr,ParameterValue=YOUR.IP.ADDR.ESS/32 \
                ParameterKey=AlertEmail,ParameterValue=you@example.com
-aws cloudformation wait stack-create-complete --stack-name aws-devops-assignment   # evidence: CREATE_COMPLETE
+aws cloudformation wait stack-create-complete --stack-name aws-devops-cfn   # evidence: CREATE_COMPLETE
 
-# edit the template (e.g. change InstanceType default or add a tag), then:
-aws cloudformation update-stack --stack-name aws-devops-assignment \
+# update used in this project: Environment dev -> test (console "Update stack", existing template).
+# The same change from the CLI (all parameters kept, one changed):
+aws cloudformation update-stack --stack-name aws-devops-cfn \
   --template-body file://cloudformation/infrastructure.yaml --capabilities CAPABILITY_IAM \
   --parameters ParameterKey=Owner,UsePreviousValue=true ParameterKey=AdminCidr,UsePreviousValue=true \
                ParameterKey=AlertEmail,UsePreviousValue=true ParameterKey=InstanceType,ParameterValue=t3.small
-aws cloudformation wait stack-update-complete --stack-name aws-devops-assignment   # evidence: UPDATE_COMPLETE
+aws cloudformation wait stack-update-complete --stack-name aws-devops-cfn   # evidence: UPDATE_COMPLETE
 ```
 Confirm the SNS subscription email, then screenshot the stack events.
 
@@ -70,10 +71,32 @@ Two cases follow *symptom -> test -> root cause -> fix -> verification* in [docs
 ## Cleanup procedure
 ```bash
 aws s3 rm s3://<bucket-name> --recursive                       # also remove old versions (console: "Empty")
-aws cloudformation delete-stack --stack-name aws-devops-assignment
-aws cloudformation wait stack-delete-complete --stack-name aws-devops-assignment
+aws cloudformation delete-stack --stack-name aws-devops-cfn
+aws cloudformation wait stack-delete-complete --stack-name aws-devops-cfn
 ```
 Then delete manually created resources (EC2, Security Group, S3 bucket, alarm, SNS topic, IAM role) and screenshot the empty console lists. Check **Billing -> Free tier** the next day.
 
+## Results and lessons learned
+- The update changed `Environment` from `dev` to `test`. Because names in the template depend on it, CloudFormation **replaced** several resources (VPC, subnet, security group, bucket, role, instance) instead of editing them in place, so the website got a new public IP. Replacement versus in-place update is visible in the stack events.
+- A stop/start of the manual instance also changes its public IP (see troubleshooting case 2); an Elastic IP or DNS name would keep it stable.
+- The S3 bucket name contains the AWS account ID, so it is not written in these docs.
+
 ## Evidence checklist
-Mark each item when the screenshot is in `screenshots/`: repo, 5+ commits, branches, website, EC2 config, SG rules, S3 versioning, CLI commands, CREATE_COMPLETE, UPDATE_COMPLETE, stack cleanup, IAM role attached, alarm, SNS email, troubleshooting 1 and 2, diagram, final cleanup.
+All items are saved in [`screenshots/`](screenshots/).
+
+| Item | Screenshot |
+|---|---|
+| Repo and branches | `git-log-graph.png`, `github-branches.png` |
+| Website (local and on EC2) | `website-local.png`, `ec2-website.png` |
+| EC2 configuration | `ec2-details.png` |
+| Security Group rules | `sg-rules.png` |
+| IAM role and S3 read policy | `iam-role.png`, `iam-s3-policy.png` |
+| S3 objects, versioning, Block Public Access | `s3-objects.png`, `s3-versions.png`, `s3-versioning.png`, `s3-block-public.png` |
+| AWS CLI / CloudShell commands | `cloudshell-1.png` |
+| CloudWatch alarm and SNS | `cloudwatch-alarm.png`, `cloudwatch-alarm-list.png`, `sns-subscription.png`, `alarm-email.png` |
+| CloudFormation validate and create | `cfn-validate.png`, `cfn-create-command.png`, `cfn-create-complete.png`, `cfn-resources.png`, `cfn-outputs.png`, `cfn-website.png` |
+| CloudFormation update | `cfn-update-complete.png`, `cfn-update-events.png`, `cfn-parameters.png` |
+| CloudFormation delete (stack cleanup) | `cfn-deleted.png`, `cfn-deleted-list.png` |
+| Troubleshooting 1 and 2 | `ts1-start.png`, `ts1-broken.png`, `ts1-fixed.png`, `ts2-broken.png`, `ts2-fixed.png` |
+| Diagram | `docs/architecture.svg` |
+| Final cleanup | *added after the final cleanup* |

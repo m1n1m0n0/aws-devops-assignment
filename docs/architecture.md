@@ -33,7 +33,7 @@ S3 is object storage: accessed over HTTPS by key, practically unlimited, version
 | Instance type | t3.micro (credit specification: standard) |
 | VPC | `vpc-03c6dc72cc445c1b0` (default VPC) |
 | Subnet | `subnet-005f4c8f7a91f6fc9` |
-| Public IP | 18.222.215.226 (temporary, released at cleanup) |
+| Public IP | temporary public IP (changes on stop/start; instance terminated at cleanup) |
 | Security Group | `aws-devops-web-sg` (`sg-0c680bc27f21c8c4e`) |
 | Storage | 8 GiB gp3 root volume, encrypted, delete on termination |
 | IAM role | `aws-devops-ec2-role` (instance profile) |
